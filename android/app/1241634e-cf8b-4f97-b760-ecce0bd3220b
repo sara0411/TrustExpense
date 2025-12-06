@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "76416765902",
+    "project_id": "trustexpense-a9b46",
+    "storage_bucket": "trustexpense-a9b46.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76416765902:android:ce01f9edd560a98cac259f",
+        "android_client_info": {
+          "package_name": "com.trustexpense.trust_expense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdZ2h_9mkVQH7Mv_7a90jxJSesqEnsROQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
