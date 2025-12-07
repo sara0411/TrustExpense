@@ -131,91 +131,89 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle bar
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.grey,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Title
-          Text(
-            'Capture Receipt',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 24),
-
-          // Camera option
-          ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(12),
+    return Material(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 40,
+              height: 4,
               decoration: BoxDecoration(
-                color: const Color(0x1A4A90E2), // primary with 10% opacity
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.camera_alt,
-                color: AppColors.primary,
+                color: AppColors.grey,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            title: const Text('Take Photo'),
-            subtitle: const Text('Use camera to capture receipt'),
-            trailing: _isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.chevron_right),
-            onTap: _isLoading ? null : _pickFromCamera,
-          ),
-          const SizedBox(height: 8),
+            const SizedBox(height: 24),
 
-          // Gallery option
-          ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0x1AA9DFBF), // accent with 10% opacity
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.photo_library,
-                color: AppColors.accent,
-              ),
+            // Title
+            Text(
+              'Capture Receipt',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            title: const Text('Choose from Gallery'),
-            subtitle: const Text('Select existing photo'),
-            trailing: _isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.chevron_right),
-            onTap: _isLoading ? null : _pickFromGallery,
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
-          // Cancel button
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-        ],
+            // Camera option
+            ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0x1A4A90E2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.camera_alt,
+                  color: AppColors.primary,
+                ),
+              ),
+              title: const Text('Take Photo'),
+              subtitle: const Text('Use camera to capture receipt'),
+              trailing: _isLoading
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: _isLoading ? null : _pickFromCamera,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Gallery option
+            ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0x1A4A90E2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.photo_library,
+                  color: AppColors.primary,
+                ),
+              ),
+              title: const Text('Choose from Gallery'),
+              subtitle: const Text('Select existing photo'),
+              trailing: _isLoading
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: _isLoading ? null : _pickFromGallery,
+            ),
+
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

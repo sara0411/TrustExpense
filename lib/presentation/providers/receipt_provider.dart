@@ -16,6 +16,20 @@ class ReceiptProvider with ChangeNotifier {
   int get totalCount => _repository.totalCount;
   bool get hasReceipts => _repository.hasReceipts;
 
+  // Filter state
+  String? _selectedCategory;
+  DateTimeRange? _dateRange;
+  String _searchQuery = '';
+
+  String? get selectedCategory => _selectedCategory;
+  DateTimeRange? get dateRange => _dateRange;
+  String get searchQuery => _searchQuery;
+
+  bool get hasActiveFilters =>
+      _selectedCategory != null ||
+      _dateRange != null ||
+      _searchQuery.isNotEmpty;
+
   Future<void> loadReceipts({
     int limit = 20,
     int offset = 0,
@@ -81,7 +95,51 @@ class ReceiptProvider with ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    await _repository.refresh();
+    await loadReceipts(
+      category: _selectedCategory,
+      startDate: _dateRange?.start,
+      endDate: _dateRange?.end,
+    );
+  }
+
+  // Filter methods
+  Future<void> filterByCategory(String? category) async {
+    _selectedCategory = category;
+    await loadReceipts(
+      category: _selectedCategory,
+      startDate: _dateRange?.start,
+      endDate: _dateRange?.end,
+    );
+  }
+
+  Future<void> filterByDateRange(DateTimeRange? dateRange) async {
+    _dateRange = dateRange;
+    await loadReceipts(
+      category: _selectedCategory,
+      startDate: _dateRange?.start,
+      endDate: _dateRange?.end,
+    );
+  }
+
+  void searchByMerchant(String query) {
+    _searchQuery = query;
     notifyListeners();
+  }
+
+  Future<void> clearFilters() async {
+    _selectedCategory = null;
+    _dateRange = null;
+    _searchQuery = '';
+    await loadReceipts();
+  }
+
+  // Get filtered receipts (client-side search)
+  List<Receipt> get filteredReceipts {
+    if (_searchQuery.isEmpty) return receipts;
+    return receipts.where((receipt) {
+      return receipt.merchant
+          .toLowerCase()
+          .contains(_searchQuery.toLowerCase());
+    }).toList();
   }
 }
