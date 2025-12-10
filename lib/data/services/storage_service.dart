@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../../core/constants/supabase_constants.dart';
 import '../../core/errors/exceptions.dart';
@@ -15,31 +16,86 @@ class StorageService {
     required String receiptId,
   }) async {
     try {
-      // Generate file path: receipts/{userId}/{receiptId}.jpg
+      // Verify file exists
+      if (!await imageFile.exists()) {
+        throw AppStorageException(
+          message: 'Image file does not exist at path: ${imageFile.path}',
+        );
+      }
+
+      // Read file as bytes
+      final bytes = await imageFile.readAsBytes();
+      final fileSize = bytes.length;
+      
+      debugPrint('📤 Uploading image: ${imageFile.path}');
+      debugPrint('📦 File size: $fileSize bytes');
+
+      // Generate file path: {userId}/{receiptId}.jpg
       final fileName = '$receiptId.jpg';
       final filePath = '$userId/$fileName';
+      
+      debugPrint('🗂️ Upload path: $filePath');
+      debugPrint('🪣 Bucket: ${SupabaseConstants.receiptsBucket}');
 
-      // Upload file to receipts bucket
-      await _client.storage
-          .from(SupabaseConstants.receiptsBucket)
-          .upload(
-            filePath,
-            imageFile,
-          );
+      // Upload bytes to receipts bucket
+      try {
+        final uploadPath = await _client.storage
+            .from(SupabaseConstants.receiptsBucket)
+            .uploadBinary(
+              filePath,
+              bytes,
+              fileOptions: supabase.FileOptions(
+                contentType: 'image/jpeg',
+                upsert: true, // Allow overwriting if file exists
+              ),
+            );
+
+        debugPrint('✅ Upload successful: $uploadPath');
+      } catch (uploadError) {
+        debugPrint('❌ Upload failed: $uploadError');
+        rethrow;
+      }
 
       // Get public URL
       final publicUrl = _client.storage
           .from(SupabaseConstants.receiptsBucket)
           .getPublicUrl(filePath);
 
+      debugPrint('🔗 Public URL: $publicUrl');
+
+      // Verify the URL is accessible (optional but helpful for debugging)
+      if (publicUrl.isEmpty) {
+        throw AppStorageException(
+          message: 'Failed to generate public URL for uploaded image',
+        );
+      }
+
       return publicUrl;
     } on supabase.StorageException catch (e) {
+      debugPrint('❌ Storage error: ${e.message}');
+      debugPrint('❌ Status code: ${e.statusCode}');
+      
+      // Provide more specific error messages
+      String errorMessage;
+      if (e.statusCode == '404') {
+        errorMessage = 'Storage bucket "${SupabaseConstants.receiptsBucket}" not found. Please create it in Supabase dashboard.';
+      } else if (e.statusCode == '403') {
+        errorMessage = 'Permission denied. Please check storage bucket policies in Supabase.';
+      } else if (e.statusCode == '400') {
+        errorMessage = 'Bad request. Please check if the bucket is public and policies are set correctly.';
+      } else if (e.message?.contains('already exists') ?? false) {
+        errorMessage = 'A file with this name already exists. Retrying with upsert...';
+      } else {
+        errorMessage = 'Failed to upload receipt image: ${e.message}';
+      }
+      
       throw AppStorageException(
-        message: 'Failed to upload receipt image: ${e.message}',
+        message: errorMessage,
         code: e.statusCode,
         originalError: e,
       );
     } catch (e) {
+      debugPrint('❌ Unexpected error: $e');
       throw AppStorageException(
         message: 'Unexpected error uploading image: ${e.toString()}',
         originalError: e,

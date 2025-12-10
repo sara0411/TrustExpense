@@ -16,11 +16,15 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    HistoryScreen(),
-    SummaryScreen(),
-    ProfileScreen(),
+  List<Widget> _getScreens() => [
+    HomeScreen(onNavigate: (index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }),
+    const HistoryScreen(),
+    const SummaryScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -28,7 +32,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: _getScreens(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -52,8 +56,8 @@ class _MainScaffoldState extends State<MainScaffold> {
             label: 'History',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart_outline),
-            activeIcon: Icon(Icons.pie_chart),
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart),
             label: 'Summary',
           ),
           BottomNavigationBarItem(

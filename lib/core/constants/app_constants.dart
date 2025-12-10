@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Application-wide constants
 class AppConstants {
   // App Info
@@ -62,4 +64,27 @@ class AppConstants {
   // Amount Validation
   static const double minAmount = 0.01;
   static const double maxAmount = 999999.99;
+  
+  // Helper method to get category icon
+  static IconData getCategoryIcon(String category) {
+    switch (category) {
+      case 'Food':
+        return Icons.restaurant;
+      case 'Transport':
+        return Icons.directions_car;
+      case 'Entertainment':
+        return Icons.movie;
+      case 'Shopping':
+        return Icons.shopping_bag;
+      case 'Health':
+        return Icons.local_hospital;
+      case 'Services':
+        return Icons.build;
+      case 'Housing':
+        return Icons.home;
+      case 'Other':
+      default:
+        return Icons.category;
+    }
+  }
 }

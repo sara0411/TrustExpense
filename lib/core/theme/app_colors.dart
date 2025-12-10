@@ -1,60 +1,55 @@
 import 'package:flutter/material.dart';
 
-/// App color palette
+/// App color palette - Custom green theme
 class AppColors {
-  // Primary Colors - Custom Theme
-  static const Color primary = Color(0xFF4A90E2);        // Blue
-  static const Color primaryDark = Color(0xFF1A3E6D);    // Dark Blue
-  static const Color accent = Color(0xFFA9DFBF);         // Mint Green
-  static const Color background = Color(0xFFE0E0E0);     // Light Gray
+  // User's specified green palette
+  static const darkestGreen = Color(0xFF081C15);  // Darkest
+  static const darkerGreen = Color(0xFF1B4332);   // Darker
+  static const darkGreen = Color(0xFF2D6A4F);     // Dark
+  static const primaryGreen = Color(0xFF40916C);  // Primary
+  static const mediumGreen = Color(0xFF52B788);   // Medium
+  static const lightGreen = Color(0xFF74C69D);    // Light
+  static const lighterGreen = Color(0xFF95D5B2);  // Lighter
+  static const lightestGreen = Color(0xFFB7E4C7); // Lightest
+  static const mintGreen = Color(0xFFD8F3DC);     // Mint
+
+  // Semantic colors using the green palette
+  static const primary = primaryGreen;
+  static const primaryLight = mediumGreen;
+  static const primaryDark = darkGreen;
+  static const secondary = mediumGreen;
+  static const accent = lightGreen;
+  static const accentDark = darkGreen;
+  static const background = Color(0xFFFAFDFB); // Very light off-white with green tint
+  static const surface = Colors.white;
+  static const white = Colors.white;
+  static const black = Colors.black;
+  static const grey = Color(0xFF9CA3AF);
+  static const greyLight = Color(0xFFF3F4F6);
+  static const divider = Color(0xFFE5E7EB);
   
-  // Secondary shades
-  static const Color primaryLight = Color(0xFF6BA3E8);
-  static const Color accentDark = Color(0xFF8BC9A3);
+  // Text colors
+  static const textPrimary = darkestGreen;
+  static const textSecondary = darkerGreen;
+  static const textTertiary = darkGreen;
+  static const textDisabled = Color(0xFF9CA3AF);
+  static const textHint = Color(0xFF9CA3AF);
   
-  // Neutral Colors
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color black = Color(0xFF000000);
-  static const Color grey = Color(0xFF9E9E9E);
-  static const Color greyLight = Color(0xFFF5F5F5);
-  static const Color greyDark = Color(0xFF616161);
-  
-  // Text Colors
-  static const Color textPrimary = Color(0xFF1A3E6D);    // Dark Blue
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color textHint = Color(0xFFBDBDBD);
-  
-  // Status Colors
-  static const Color success = Color(0xFFA9DFBF);        // Mint Green
-  static const Color error = Color(0xFFE57373);
-  static const Color warning = Color(0xFFFFB74D);
-  static const Color info = Color(0xFF4A90E2);           // Blue
-  
-  // Category Colors (for expense categories)
-  static const Color categoryFood = Color(0xFFFF6B6B);
-  static const Color categoryTransport = Color(0xFF4ECDC4);
-  static const Color categoryEntertainment = Color(0xFF9B59B6);
-  static const Color categoryShopping = Color(0xFFE74C3C);
-  static const Color categoryHealth = Color(0xFFA9DFBF);  // Mint Green
-  static const Color categoryServices = Color(0xFF4A90E2); // Blue
-  static const Color categoryHousing = Color(0xFFF39C12);
-  static const Color categoryOther = Color(0xFF95A5A6);
-  
-  // Surface Colors
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF5F5F5);
-  
-  // Border Colors
-  static const Color border = Color(0xFFE0E0E0);          // Light Gray
-  static const Color borderFocus = Color(0xFF4A90E2);     // Blue
-  
-  // Shadow
-  static const Color shadow = Color(0x1A000000);
-  
-  // Disabled
-  static const Color disabled = Color(0xFFBDBDBD);
-  static const Color disabledBackground = Color(0xFFE0E0E0); // Light Gray
-  
-  // Divider
-  static const Color divider = Color(0xFFE0E0E0);
+  // Border colors
+  static const border = Color(0xFFE5E7EB);
+  static const borderFocus = primaryGreen;
+
+  // Status colors using green palette
+  static const success = mediumGreen;
+  static const error = Color(0xFFDC2626);
+  static const warning = Color(0xFFF59E0B);
+  static const info = primaryGreen;
+
+  // Category colors - using neutral gray to avoid color overload
+  // Green is reserved for brand elements (hero card, buttons, accents)
+  static Color getCategoryColor(String category) {
+    // All categories use the same neutral gray
+    // This creates visual calm and lets the green brand elements stand out
+    return const Color(0xFF6B7280); // Medium gray for all categories
+  }
 }
