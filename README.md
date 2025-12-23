@@ -1,55 +1,79 @@
 # TrustExpense
 
-Privacy-first expense tracking with blockchain certification.
+**Privacy-first expense tracking with AI-powered receipt processing**
 
 ## Overview
 
-TrustExpense is a Flutter mobile application that allows users to:
-- Capture receipt photos and extract data using on-device OCR
-- Automatically classify expenses using local AI
-- Store data securely in Firebase
-- Generate monthly summaries with blockchain certification
-- Export professional PDF reports
+TrustExpense is a Flutter mobile application that helps users track expenses by capturing receipt photos and automatically extracting information using OCR and deep learning.
 
-## Features
+### Key Features
 
-- **On-Device OCR**: Google ML Kit for text recognition
-- **Local AI Classification**: TensorFlow Lite model
-- **Firebase Backend**: Firestore, Storage, and Authentication
-- **Blockchain Certification**: Polygon Mumbai testnet
-- **PDF Reports**: With QR code verification
+- **📸 Receipt Capture**: Take photos of receipts using camera or gallery
+- **🔍 OCR Text Extraction**: On-device text recognition using Google ML Kit
+- **🤖 AI Category Classification**: Deep learning model classifies expenses automatically
+- **💾 Cloud Storage**: Secure data storage with Supabase (PostgreSQL + Storage)
+- **📊 Spending Summaries**: View monthly spending with category breakdowns
+- **📱 Clean UI**: Simple, easy-to-use Material Design interface
+
+## How It Works
+
+```
+1. Capture Receipt Photo
+   ↓
+2. OCR Extracts Text (Google ML Kit)
+   ↓
+3. AI Classifies Category (TensorFlow Lite)
+   ↓
+4. Save to Database (Supabase)
+   ↓
+5. View in History & Summary
+```
 
 ## Tech Stack
 
-- **Frontend**: Flutter 3.9+
-- **OCR**: Google ML Kit
-- **AI**: TensorFlow Lite
-- **Backend**: Firebase (Firestore, Storage, Auth)
-- **Blockchain**: Polygon Mumbai (Web3)
-- **State Management**: Provider
-- **Dependency Injection**: GetIt
+### Frontend
+- **Flutter 3.9+**: Cross-platform mobile framework
+- **Provider**: State management
+- **Material Design**: UI components
+
+### Backend
+- **Supabase**: Backend-as-a-Service
+  - PostgreSQL database
+  - File storage
+  - Authentication
+
+### AI/ML
+- **Google ML Kit**: On-device OCR text recognition
+- **TensorFlow Lite**: Deep learning for expense classification
+
+## Expense Categories
+
+The AI model classifies receipts into these categories:
+- 🍔 Food & Dining
+- 🚗 Transportation
+- 🛍️ Shopping
+- 🎬 Entertainment
+- 💡 Bills & Utilities
+- 📦 Other
 
 ## Project Structure
 
 ```
 lib/
-├── core/
-│   ├── constants/     # App, Firebase, and blockchain constants
-│   ├── theme/         # App theme and colors
-│   ├── utils/         # Utility functions
-│   └── errors/        # Custom exceptions
-├── data/
-│   ├── models/        # Data models
-│   ├── repositories/  # Business logic
-│   └── services/      # Firebase, OCR, AI, blockchain services
-├── presentation/
-│   ├── screens/       # UI screens
-│   ├── widgets/       # Reusable widgets
-│   └── providers/     # State management
-└── assets/
-    ├── images/        # App images
-    └── tflite/        # AI models
+├── main.dart                 # App entry point
+├── app.dart                  # Root widget, providers
+├── core/                     # Constants, theme, utilities
+├── data/                     # Models, repositories, services
+│   ├── models/               # Data models (Receipt, Summary)
+│   ├── repositories/         # Data access logic
+│   └── services/             # Supabase, OCR, AI, Storage
+└── presentation/             # UI layer
+    ├── providers/            # State management
+    ├── screens/              # App screens
+    └── widgets/              # Reusable components
 ```
+
+For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Getting Started
 
@@ -57,49 +81,104 @@ lib/
 
 - Flutter SDK 3.9.2 or higher
 - Android Studio / VS Code
-- Firebase account
-- Polygon Mumbai testnet wallet
+- Supabase account (free tier available)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**
 ```bash
 git clone https://github.com/sara0411/TrustExpense.git
 cd TrustExpense
 ```
 
-2. Install dependencies:
+2. **Install dependencies**
 ```bash
 flutter pub get
 ```
 
-3. Configure Firebase:
-   - Create a Firebase project
-   - Download `google-services.json` (Android)
-   - Place in `android/app/`
+3. **Configure Supabase**
+   - Create a free Supabase project at [supabase.com](https://supabase.com)
+   - Get your project URL and anon key
+   - Update `lib/core/constants/supabase_constants.dart`:
+   ```dart
+   class SupabaseConstants {
+     static const String supabaseUrl = 'YOUR_PROJECT_URL';
+     static const String supabaseAnonKey = 'YOUR_ANON_KEY';
+   }
+   ```
 
-4. Run the app:
+4. **Set up database**
+   - Run the SQL schema in Supabase SQL Editor (see `database_schema.sql`)
+   - This creates the `receipts` and `monthly_summaries` tables
+
+5. **Run the app**
 ```bash
 flutter run
 ```
 
-## Development Roadmap
+## Code Documentation
 
-- [x] Sprint 1.1: Project Setup
-- [ ] Sprint 1.2: Authentication
-- [ ] Sprint 1.3: Basic Navigation
-- [ ] Phase 2: OCR & Receipt Capture
-- [ ] Phase 3: AI Classification
-- [ ] Phase 4: History & Management
-- [ ] Phase 5: Monthly Summary & Charts
-- [ ] Phase 6: Blockchain Integration
-- [ ] Phase 7: PDF Export & QR
-- [ ] Phase 8: Polish & Testing
-- [ ] Phase 9: Deployment
+The codebase is extensively commented to make it easy to understand:
 
-## Version
+- **File-level comments**: Explain the purpose of each file
+- **Class-level comments**: Describe what each class does
+- **Method-level comments**: Detail what each function does and how
+- **Inline comments**: Clarify complex logic
 
-Current Version: 1.0.0 (MVP in development)
+Example:
+```dart
+/// OCR (Optical Character Recognition) Service
+/// 
+/// This service handles text extraction from receipt images using Google ML Kit.
+/// ML Kit provides on-device text recognition, meaning all processing happens
+/// locally on the user's phone without sending data to external servers.
+class OCRService {
+  // ... implementation
+}
+```
+
+## Deep Learning Integration
+
+The app uses TensorFlow Lite for on-device deep learning:
+
+### How AI Classification Works
+
+1. **Input**: OCR-extracted text from receipt
+2. **Feature Extraction**: Convert text to numerical features
+3. **Neural Network**: Process features through model layers
+4. **Output**: Predicted category + confidence score
+
+### Example
+```dart
+// Extract text from receipt
+final text = await ocrService.extractText(imageFile);
+
+// Classify using deep learning
+final result = await aiService.classifyText(text);
+
+// Get prediction
+print(result['category']);     // "Food & Dining"
+print(result['confidence']);   // 0.85 (85% confident)
+```
+
+## Development Status
+
+Current Version: **1.0.0** (Simplified for Presentation)
+
+### Completed Features
+- ✅ Receipt capture (camera/gallery)
+- ✅ OCR text extraction
+- ✅ AI category classification
+- ✅ Supabase integration
+- ✅ Receipt history
+- ✅ Monthly summaries
+- ✅ Category breakdown charts
+
+### Simplified (Removed for Clarity)
+- ❌ Blockchain certification
+- ❌ PDF export
+- ❌ QR code verification
+- ❌ Complex animations
 
 ## License
 
@@ -108,3 +187,7 @@ Private project - All rights reserved
 ## Contact
 
 For questions or support, please contact the development team.
+
+---
+
+**Note**: This is an educational project demonstrating Flutter development, OCR integration, and deep learning for mobile applications.

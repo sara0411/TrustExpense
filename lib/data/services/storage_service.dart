@@ -83,7 +83,7 @@ class StorageService {
         errorMessage = 'Permission denied. Please check storage bucket policies in Supabase.';
       } else if (e.statusCode == '400') {
         errorMessage = 'Bad request. Please check if the bucket is public and policies are set correctly.';
-      } else if (e.message?.contains('already exists') ?? false) {
+      } else if (e.message.contains('already exists')) {
         errorMessage = 'A file with this name already exists. Retrying with upsert...';
       } else {
         errorMessage = 'Failed to upload receipt image: ${e.message}';

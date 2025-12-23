@@ -2,7 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../data/models/parsed_receipt_data.dart';
+import '../../../data/services/ai_classification_service.dart';
+import '../../../data/services/gemini_ai_service.dart';
 import 'receipt_form_screen.dart';
 
 /// Screen to display and edit OCR extraction results
@@ -32,6 +35,19 @@ class _OCRResultsScreenState extends State<OCRResultsScreen> {
     if (confidence >= 0.7) return AppColors.success;
     if (confidence >= 0.4) return AppColors.warning;
     return AppColors.error;
+  }
+
+  /// Predict category using Gemini AI with fallback
+  Future<String> _predictCategoryWithAI() async {
+    try {
+      final geminiService = GeminiAIClassificationService();
+      await geminiService.initialize();
+      return await geminiService.classifyReceipt(widget.parsedData.rawText);
+    } catch (e) {
+      // Fallback to keyword-based
+      final keywordService = AIClassificationService();
+      return keywordService.classifyExpense(widget.parsedData.rawText);
+    }
   }
 
   @override
@@ -110,6 +126,25 @@ class _OCRResultsScreenState extends State<OCRResultsScreen> {
             value: widget.parsedData.merchant ?? 'Not found',
             confidence: widget.parsedData.merchantConfidence,
             hasData: widget.parsedData.hasMerchant,
+          ),
+          const SizedBox(height: 12),
+
+          // AI Predicted Category (using REAL AI)
+          FutureBuilder<String>(
+            future: _predictCategoryWithAI(),
+            builder: (context, snapshot) {
+              final category = snapshot.data ?? 'Other';
+              final isLoading = snapshot.connectionState == ConnectionState.waiting;
+              
+              return _buildDataCard(
+                context,
+                icon: isLoading ? Icons.hourglass_empty : AppConstants.getCategoryIcon(category),
+                label: 'Category (AI Predicted)',
+                value: isLoading ? 'Analyzing...' : category,
+                confidence: 0.9, // Gemini AI has high confidence
+                hasData: !isLoading,
+              );
+            },
           ),
           const SizedBox(height: 24),
 

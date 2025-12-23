@@ -17,38 +17,31 @@ dependencies:
   # Backend - Supabase
   supabase_flutter: ^2.0.0
   
-  # OCR & AI
-  google_mlkit_text_recognition: ^0.13.0
-  tflite_flutter: ^0.10.0
-  
-  # Blockchain
-  web3dart: ^2.7.0
-  http: ^1.1.0
+  # OCR & AI - Deep Learning Components
+  google_mlkit_text_recognition: ^0.13.0  # On-device OCR text extraction
+  google_generative_ai: ^0.4.7            # Real AI for text classification (Gemini)
   
   # Image Processing
-  image_picker: ^1.0.4
-  image: ^4.1.3
-  permission_handler: ^11.0.0
+  image_picker: ^1.0.4                    # Camera and gallery access
+  image: ^4.1.3                           # Image manipulation and preprocessing for ML
+  permission_handler: ^11.0.0             # Camera permissions
   
   # State Management
-  provider: ^6.1.0
+  provider: ^6.1.0                        # State management pattern
   
   # Dependency Injection
-  get_it: ^7.6.0
+  get_it: ^7.6.0                          # Service locator
   
-  # PDF & QR
-  pdf: ^3.10.0
-  qr_flutter: ^4.1.0
-  
-  # Charts
-  fl_chart: ^0.65.0
+  # Charts - Simple visualization
+  fl_chart: ^0.65.0                       # For basic pie charts
   
   # Utilities
-  intl: ^0.18.0
-  crypto: ^3.0.3
-  flutter_secure_storage: ^9.0.0
-  path_provider: ^2.1.0
-  share_plus: ^7.2.0
+  intl: ^0.18.0                           # Date formatting and localization
+  http: ^1.1.0                            # HTTP requests
+  flutter_secure_storage: ^9.0.0         # Secure local storage
+  path_provider: ^2.1.0                   # File system paths
+  share_plus: ^7.2.0                      # Share functionality
+  tflite_flutter: ^0.12.1
 
 dev_dependencies:
   flutter_test:

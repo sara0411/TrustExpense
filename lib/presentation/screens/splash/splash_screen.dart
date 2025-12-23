@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
 import '../main_scaffold.dart';
 
-/// Splash screen with authentication check
+/// Splash Screen with Authentication Check
+/// 
+/// Checks if user is logged in and navigates accordingly:
+/// - If logged in → MainScaffold (home screen)
+/// - If not logged in → LoginScreen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -18,64 +20,64 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthState();
+    _checkAuthAndNavigate();
   }
 
-  Future<void> _checkAuthState() async {
-    // Wait for a short delay to show splash screen
-    await Future.delayed(const Duration(seconds: 2));
+  /// Check authentication status and navigate
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait 1 second to show splash screen
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
+    // Get authentication provider
     final authProvider = context.read<AuthProvider>();
+    
+    // Check if user is authenticated
+    final isAuthenticated = authProvider.isAuthenticated;
 
-    // Navigate based on auth state
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => authProvider.isAuthenticated
-            ? const MainScaffold()
-            : const LoginScreen(),
-      ),
-    );
+    // Navigate based on auth status
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => isAuthenticated 
+              ? const MainScaffold()  // User is logged in
+              : const LoginScreen(),  // User needs to log in
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: Center(
+      backgroundColor: Colors.green,
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
-            const Icon(
+            // App icon
+            Icon(
               Icons.receipt_long,
-              size: 120,
-              color: AppColors.white,
+              size: 100,
+              color: Colors.white,
             ),
-            const SizedBox(height: 24),
-
-            // App Name
+            SizedBox(height: 20),
+            
+            // App name
             Text(
-              AppConstants.appName,
-              style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+              'TrustExpense',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-            const SizedBox(height: 8),
-
-            Text(
-              'Privacy-first expense tracking',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
-                  ),
-            ),
-            const SizedBox(height: 48),
-
-            // Loading Indicator
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            SizedBox(height: 40),
+            
+            // Loading indicator
+            CircularProgressIndicator(
+              color: Colors.white,
             ),
           ],
         ),

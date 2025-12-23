@@ -50,7 +50,16 @@ class OCRException extends AppException {
   });
 }
 
-/// Classification exceptions
+/// AI/ML classification exceptions
+class AIException extends AppException {
+  AIException({
+    required super.message,
+    super.code,
+    super.originalError,
+  });
+}
+
+/// Classification exceptions (deprecated - use AIException)
 class ClassificationException extends AppException {
   ClassificationException({
     required super.message,

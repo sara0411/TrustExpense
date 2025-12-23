@@ -6,7 +6,10 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../data/models/parsed_receipt_data.dart';
+import '../../../data/services/ai_classification_service.dart';
+import '../../../data/services/gemini_ai_service.dart';
 import '../../providers/receipt_provider.dart';
+import '../../providers/summary_provider.dart';
 
 /// Screen for editing and saving receipt data
 class ReceiptFormScreen extends StatefulWidget {
@@ -33,6 +36,7 @@ class _ReceiptFormScreenState extends State<ReceiptFormScreen> {
   // Form values
   late DateTime _selectedDate;
   late String _selectedCategory;
+  late String _aiPredictedCategory; // Store the AI prediction separately
   bool _isLoading = false;
 
   @override
@@ -47,7 +51,44 @@ class _ReceiptFormScreenState extends State<ReceiptFormScreen> {
       text: widget.parsedData.merchant ?? AppConstants.unknownMerchant,
     );
     _selectedDate = widget.parsedData.date ?? DateTime.now();
-    _selectedCategory = AppConstants.defaultCategory;
+    
+    // Use REAL AI to predict category from receipt text
+    _classifyReceiptWithAI();
+  }
+  
+  /// Classify receipt using Gemini AI with keyword-based fallback
+  Future<void> _classifyReceiptWithAI() async {
+    final ocrText = widget.parsedData.rawText;
+    
+    try {
+      // Try Gemini AI first (REAL AI)
+      final geminiService = GeminiAIClassificationService();
+      await geminiService.initialize();
+      
+      debugPrint('🤖 Using Gemini AI for classification...');
+      final aiCategory = await geminiService.classifyReceipt(ocrText);
+      
+      setState(() {
+        _aiPredictedCategory = aiCategory;
+        _selectedCategory = _aiPredictedCategory;
+      });
+      
+      debugPrint('✅ Gemini AI predicted: $_aiPredictedCategory');
+      
+    } catch (e) {
+      // Fallback to keyword-based classification if AI fails
+      debugPrint('⚠️ Gemini AI failed, using keyword fallback: $e');
+      
+      final keywordService = AIClassificationService();
+      final keywordCategory = keywordService.classifyExpense(ocrText);
+      
+      setState(() {
+        _aiPredictedCategory = keywordCategory;
+        _selectedCategory = _aiPredictedCategory;
+      });
+      
+      debugPrint('📝 Keyword-based predicted: $_aiPredictedCategory');
+    }
   }
 
   @override
@@ -82,6 +123,12 @@ class _ReceiptFormScreenState extends State<ReceiptFormScreen> {
     try {
       final receiptProvider = context.read<ReceiptProvider>();
       
+      debugPrint('💾 Saving Receipt:');
+      debugPrint('   Amount: \$${_amountController.text}');
+      debugPrint('   Merchant: ${_merchantController.text.trim()}');
+      debugPrint('   Category: $_selectedCategory');
+      debugPrint('   Date: $_selectedDate');
+      
       await receiptProvider.createReceipt(
         amount: double.parse(_amountController.text),
         date: _selectedDate,
@@ -94,6 +141,12 @@ class _ReceiptFormScreenState extends State<ReceiptFormScreen> {
       );
 
       if (mounted) {
+        // Refresh summary to show the new receipt
+        final summaryProvider = context.read<SummaryProvider>();
+        await summaryProvider.refresh();
+        
+        debugPrint('✅ Receipt saved and summary refreshed!');
+        
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -257,9 +310,14 @@ class _ReceiptFormScreenState extends State<ReceiptFormScreen> {
             // Category dropdown
             DropdownButtonFormField<String>(
               initialValue: _selectedCategory,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Category *',
-                border: OutlineInputBorder(),
+                helperText: '🤖 AI suggested: $_aiPredictedCategory',
+                helperStyle: const TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+                border: const OutlineInputBorder(),
               ),
               items: AppConstants.expenseCategories.map((category) {
                 return DropdownMenuItem(
