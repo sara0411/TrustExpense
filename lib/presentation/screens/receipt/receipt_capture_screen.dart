@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/permission_helper.dart';
 import '../../../data/services/image_picker_service.dart';
-import 'image_preview_screen.dart';
+import 'receipt_processing_screen.dart';
 
 /// Screen for capturing receipt images
 class ReceiptCaptureScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
         Navigator.of(context).pop(); // Close bottom sheet
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => ImagePreviewScreen(imageFile: image),
+            builder: (_) => ReceiptProcessingScreen(imageFile: image),
           ),
         );
       }
@@ -83,7 +83,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
         Navigator.of(context).pop(); // Close bottom sheet
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => ImagePreviewScreen(imageFile: image),
+            builder: (_) => ReceiptProcessingScreen(imageFile: image),
           ),
         );
       }
