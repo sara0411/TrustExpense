@@ -8,12 +8,12 @@ TrustExpense is a Flutter mobile application that helps users track expenses by 
 
 ### Key Features
 
-- **📸 Receipt Capture**: Take photos of receipts using camera or gallery
-- **🔍 OCR Text Extraction**: On-device text recognition using Google ML Kit
-- **🤖 AI Category Classification**: Deep learning model classifies expenses automatically
-- **💾 Cloud Storage**: Secure data storage with Supabase (PostgreSQL + Storage)
-- **📊 Spending Summaries**: View monthly spending with category breakdowns
-- **📱 Clean UI**: Simple, easy-to-use Material Design interface
+- ** Receipt Capture**: Take photos of receipts using camera or gallery
+- ** OCR Text Extraction**: On-device text recognition using Google ML Kit
+- ** AI Category Classification**: Deep learning model classifies expenses automatically
+- ** Cloud Storage**: Secure data storage with Supabase (PostgreSQL + Storage)
+- ** Spending Summaries**: View monthly spending with category breakdowns
+- ** Clean UI**: Simple, easy-to-use Material Design interface
 
 ## How It Works
 
@@ -49,12 +49,12 @@ TrustExpense is a Flutter mobile application that helps users track expenses by 
 ## Expense Categories
 
 The AI model classifies receipts into these categories:
-- 🍔 Food & Dining
-- 🚗 Transportation
-- 🛍️ Shopping
-- 🎬 Entertainment
-- 💡 Bills & Utilities
-- 📦 Other
+-  Food & Dining
+-  Transportation
+-  Shopping
+-  Entertainment
+-  Bills & Utilities
+-  Other
 
 ## Project Structure
 
@@ -166,27 +166,20 @@ print(result['confidence']);   // 0.85 (85% confident)
 Current Version: **1.0.0** (Simplified for Presentation)
 
 ### Completed Features
-- ✅ Receipt capture (camera/gallery)
-- ✅ OCR text extraction
-- ✅ AI category classification
-- ✅ Supabase integration
-- ✅ Receipt history
-- ✅ Monthly summaries
-- ✅ Category breakdown charts
-
-### Simplified (Removed for Clarity)
-- ❌ Blockchain certification
-- ❌ PDF export
-- ❌ QR code verification
-- ❌ Complex animations
-
+-  Receipt capture (camera/gallery)
+-  OCR text extraction
+-  AI category classification
+-  Supabase integration
+-  Receipt history
+-  Monthly summaries
+-  Category breakdown charts
 ## License
 
 Private project - All rights reserved
 
 ## Contact
 
-For questions or support, please contact the development team.
+For questions or support, please contact the collaborators saraferraa0@gmail.com OR hajarafdelsemlali@gmail.com
 
 ---
 
