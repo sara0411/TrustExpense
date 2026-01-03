@@ -62,7 +62,7 @@ def create_model():
     
     model = Model(inputs=base_model.input, outputs=output, name='receipt_detector')
     
-    print(f"✅ Model created with {model.count_params():,} parameters")
+    print(f" Model created with {model.count_params():,} parameters")
     print(f"   - Trainable: {sum([tf.keras.backend.count_params(w) for w in model.trainable_weights]):,}")
     print(f"   - Non-trainable: {sum([tf.keras.backend.count_params(w) for w in model.non_trainable_weights]):,}")
     
@@ -78,7 +78,7 @@ def create_data_generators():
     - Zoom: 10% (different camera distances)
     - NO horizontal flip (receipts have orientation)
     """
-    print("📊 Creating data generators...")
+    print(" Creating data generators...")
     
     # Training data augmentation
     train_datagen = ImageDataGenerator(
@@ -112,7 +112,7 @@ def create_data_generators():
         shuffle=False
     )
     
-    print(f"✅ Data generators created")
+    print(f" Data generators created")
     print(f"   - Training samples: {train_generator.samples}")
     print(f"   - Validation samples: {val_generator.samples}")
     print(f"   - Classes: {train_generator.class_indices}")
@@ -123,7 +123,7 @@ def train_initial(model, train_gen, val_gen):
     """
     Initial training with frozen base model
     """
-    print("\n🎯 Phase 1: Initial Training (frozen base)")
+    print("\n Phase 1: Initial Training (frozen base)")
     
     # Compile model
     model.compile(
@@ -170,7 +170,7 @@ def fine_tune(model, base_model, train_gen, val_gen):
     """
     Fine-tuning: Unfreeze top layers and train with lower learning rate
     """
-    print("\n🎯 Phase 2: Fine-tuning (unfrozen top layers)")
+    print("\n Phase 2: Fine-tuning (unfrozen top layers)")
     
     # Unfreeze base model
     base_model.trainable = True
@@ -206,7 +206,7 @@ def convert_to_tflite(model):
     """
     Convert Keras model to TensorFlow Lite for mobile deployment
     """
-    print("\n📱 Converting to TensorFlow Lite...")
+    print("\n Converting to TensorFlow Lite...")
     
     # Convert
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
@@ -220,7 +220,7 @@ def convert_to_tflite(model):
     
     # Get size
     size_mb = len(tflite_model) / (1024 * 1024)
-    print(f"✅ TFLite model saved: {TFLITE_SAVE_PATH}")
+    print(f" TFLite model saved: {TFLITE_SAVE_PATH}")
     print(f"   - Size: {size_mb:.2f} MB")
     
     return tflite_model
@@ -265,7 +265,7 @@ def plot_training_history(history, history_fine=None):
     
     plt.tight_layout()
     plt.savefig('../models/training_history.png')
-    print("📊 Training history saved to: ../models/training_history.png")
+    print(" Training history saved to: ../models/training_history.png")
 
 def main():
     """
@@ -288,7 +288,7 @@ def main():
     history_fine = fine_tune(model, base_model, train_gen, val_gen)
     
     # Evaluate
-    print("\n📊 Final Evaluation:")
+    print("\n Final Evaluation:")
     results = model.evaluate(val_gen, verbose=0)
     print(f"   - Loss: {results[0]:.4f}")
     print(f"   - Accuracy: {results[1]:.4f}")
@@ -301,7 +301,7 @@ def main():
     # Plot history
     plot_training_history(history, history_fine)
     
-    print("\n✅ Training complete!")
+    print("\n Training complete!")
     print(f"   - Model saved: {MODEL_SAVE_PATH}")
     print(f"   - TFLite model: {TFLITE_SAVE_PATH}")
 

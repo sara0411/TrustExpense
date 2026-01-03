@@ -42,6 +42,12 @@ dependencies:
   path_provider: ^2.1.0                   # File system paths
   share_plus: ^7.2.0                      # Share functionality
   tflite_flutter: ^0.12.1
+  
+  # Blockchain Integration
+  web3dart: ^2.7.3                        # Ethereum/Polygon blockchain interaction
+  crypto: ^3.0.3                          # SHA-256 hashing for certificates
+  qr_flutter: ^4.1.0                      # QR code generation for verification
+  pointycastle: ^3.9.1                    # Cryptographic signing
 
 dev_dependencies:
   flutter_test:
@@ -55,3 +61,4 @@ flutter:
   assets:
     - assets/images/
     - assets/tflite/
+    - assets/blockchain/

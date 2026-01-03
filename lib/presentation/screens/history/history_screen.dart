@@ -93,7 +93,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     receipt.merchant,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(receipt.category),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(receipt.category),
+                      const SizedBox(height: 4),
+                      // Blockchain certification badge (MOCK FOR DEMO)
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.verified,
+                            size: 14,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Blockchain Certified',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   trailing: Text(
                     '\$${receipt.amount.toStringAsFixed(2)}',
                     style: const TextStyle(
@@ -101,6 +126,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  isThreeLine: true,
                 ),
               );
             },

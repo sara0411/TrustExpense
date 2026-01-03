@@ -68,6 +68,31 @@ class Receipt {
   
   // Timestamp when this receipt was last modified
   final DateTime updatedAt;
+  
+  // ============================================================================
+  // BLOCKCHAIN CERTIFICATION FIELDS
+  // ============================================================================
+  
+  // SHA-256 hash of receipt data for blockchain certification
+  final String? certificateHash;
+  
+  // Blockchain transaction hash (Sepolia testnet)
+  final String? blockchainTxHash;
+  
+  // Certificate ID from smart contract
+  final String? certificateId;
+  
+  // Timestamp when receipt was certified on blockchain
+  final DateTime? certifiedAt;
+  
+  // Certification status: pending, submitted, confirmed, failed
+  final String? certificationStatus;
+  
+  // Block number where certificate was mined
+  final int? blockNumber;
+  
+  // Wallet address that certified this receipt
+  final String? certifierAddress;
 
   /// Constructor - creates a Receipt instance
   /// 
@@ -87,6 +112,14 @@ class Receipt {
     this.ocrText,
     required this.createdAt,
     required this.updatedAt,
+    // Blockchain fields
+    this.certificateHash,
+    this.blockchainTxHash,
+    this.certificateId,
+    this.certifiedAt,
+    this.certificationStatus,
+    this.blockNumber,
+    this.certifierAddress,
   });
 
   /// Deserialize from JSON (Supabase → Dart object)
@@ -113,6 +146,16 @@ class Receipt {
       ocrText: json['ocr_text'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      // Blockchain fields
+      certificateHash: json['certificate_hash'] as String?,
+      blockchainTxHash: json['blockchain_tx_hash'] as String?,
+      certificateId: json['certificate_id'] as String?,
+      certifiedAt: json['certified_at'] != null 
+        ? DateTime.parse(json['certified_at'] as String) 
+        : null,
+      certificationStatus: json['certification_status'] as String?,
+      blockNumber: json['block_number'] as int?,
+      certifierAddress: json['certifier_address'] as String?,
     );
   }
 
@@ -139,6 +182,14 @@ class Receipt {
       'ocr_text': ocrText,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      // Blockchain fields
+      'certificate_hash': certificateHash,
+      'blockchain_tx_hash': blockchainTxHash,
+      'certificate_id': certificateId,
+      'certified_at': certifiedAt?.toIso8601String(),
+      'certification_status': certificationStatus,
+      'block_number': blockNumber,
+      'certifier_address': certifierAddress,
     };
   }
 
@@ -163,6 +214,9 @@ class Receipt {
       'manual_override': manualOverride,
       'image_url': imageUrl,
       'ocr_text': ocrText,
+      // Blockchain fields (for new receipts)
+      'certificate_hash': certificateHash,
+      'certification_status': certificationStatus,
     };
   }
 
@@ -190,6 +244,14 @@ class Receipt {
       'image_url': imageUrl,
       'ocr_text': ocrText,
       'updated_at': DateTime.now().toIso8601String(),
+      // Blockchain fields (can be updated)
+      'certificate_hash': certificateHash,
+      'blockchain_tx_hash': blockchainTxHash,
+      'certificate_id': certificateId,
+      'certified_at': certifiedAt?.toIso8601String(),
+      'certification_status': certificationStatus,
+      'block_number': blockNumber,
+      'certifier_address': certifierAddress,
     };
   }
 
@@ -223,6 +285,14 @@ class Receipt {
     String? ocrText,
     DateTime? createdAt,
     DateTime? updatedAt,
+    // Blockchain fields
+    String? certificateHash,
+    String? blockchainTxHash,
+    String? certificateId,
+    DateTime? certifiedAt,
+    String? certificationStatus,
+    int? blockNumber,
+    String? certifierAddress,
   }) {
     return Receipt(
       id: id ?? this.id,
@@ -237,6 +307,14 @@ class Receipt {
       ocrText: ocrText ?? this.ocrText,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      // Blockchain fields
+      certificateHash: certificateHash ?? this.certificateHash,
+      blockchainTxHash: blockchainTxHash ?? this.blockchainTxHash,
+      certificateId: certificateId ?? this.certificateId,
+      certifiedAt: certifiedAt ?? this.certifiedAt,
+      certificationStatus: certificationStatus ?? this.certificationStatus,
+      blockNumber: blockNumber ?? this.blockNumber,
+      certifierAddress: certifierAddress ?? this.certifierAddress,
     );
   }
 
@@ -274,4 +352,19 @@ class Receipt {
   /// Hash code based on ID for use in Sets and Maps
   @override
   int get hashCode => id.hashCode;
+  
+  /// Check if receipt is blockchain certified
+  /// 
+  /// Returns true if the receipt has been successfully certified on the blockchain
+  bool get isCertified => certificationStatus == 'confirmed';
+  
+  /// Check if certification is in progress
+  bool get isCertifying => 
+    certificationStatus == 'pending' || certificationStatus == 'submitted';
+  
+  /// Get blockchain explorer URL for this receipt's transaction
+  String? get explorerUrl {
+    if (blockchainTxHash == null) return null;
+    return 'https://sepolia.etherscan.io/tx/$blockchainTxHash';
+  }
 }

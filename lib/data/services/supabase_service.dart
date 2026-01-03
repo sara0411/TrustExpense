@@ -267,4 +267,58 @@ class SupabaseService {
       );
     }
   }
+
+  // ============================================================================
+  // BLOCKCHAIN METHODS
+  // ============================================================================
+
+  /// Update blockchain-specific fields for a receipt
+  /// 
+  /// This method updates only blockchain certification fields without
+  /// affecting other receipt data.
+  Future<void> updateReceiptBlockchainFields({
+    required String receiptId,
+    String? certificateHash,
+    String? blockchainTxHash,
+    String? certificateId,
+    String? certificationStatus,
+    DateTime? certifiedAt,
+    int? blockNumber,
+    String? certifierAddress,
+  }) async {
+    try {
+      if (currentUserId == null) {
+        throw AppAuthException(message: 'User not authenticated');
+      }
+
+      final Map<String, dynamic> updates = {};
+      
+      if (certificateHash != null) updates['certificate_hash'] = certificateHash;
+      if (blockchainTxHash != null) updates['blockchain_tx_hash'] = blockchainTxHash;
+      if (certificateId != null) updates['certificate_id'] = certificateId;
+      if (certificationStatus != null) updates['certification_status'] = certificationStatus;
+      if (certifiedAt != null) updates['certified_at'] = certifiedAt.toIso8601String();
+      if (blockNumber != null) updates['block_number'] = blockNumber;
+      if (certifierAddress != null) updates['certifier_address'] = certifierAddress;
+
+      if (updates.isEmpty) return;
+
+      await _client
+          .from(SupabaseConstants.receiptsTable)
+          .update(updates)
+          .eq(SupabaseConstants.receiptId, receiptId)
+          .eq(SupabaseConstants.receiptUserId, currentUserId!);
+    } on PostgrestException catch (e) {
+      throw AppException(
+        message: 'Failed to update blockchain fields: ${e.message}',
+        code: e.code,
+        originalError: e,
+      );
+    } catch (e) {
+      throw AppException(
+        message: 'Unexpected error updating blockchain fields: ${e.toString()}',
+        originalError: e,
+      );
+    }
+  }
 }

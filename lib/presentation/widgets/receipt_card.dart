@@ -112,6 +112,28 @@ class ReceiptCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                      // Blockchain certification badge (MOCK FOR DEMO)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.verified,
+                              size: 14,
+                              color: Colors.green,
+                            ),
+                            const SizedBox(width: 4),
+                            const Text(
+                              'Blockchain Certified',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

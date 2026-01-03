@@ -39,11 +39,11 @@ if not os.path.exists(MODEL_PATH):
     output = Dense(1, activation='sigmoid')(x)
     model = Model(inputs=base_model.input, outputs=output)
 else:
-    print("✅ Loading saved model...")
+    print(" Loading saved model...")
     model = load_model(MODEL_PATH)
 
 # Prepare data
-print("\n📊 Loading data...")
+print("\n Loading data...")
 train_datagen = ImageDataGenerator(rescale=1./255)
 val_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -55,16 +55,16 @@ val_gen = val_datagen.flow_from_directory(
 )
 
 # Evaluate current performance
-print("\n📊 Evaluating current model...")
+print("\n Evaluating current model...")
 results = model.evaluate(val_gen, verbose=0)
 print(f"   - Validation Loss: {results[0]:.4f}")
 print(f"   - Validation Accuracy: {results[1]:.4f}")
 
 if results[1] >= 0.95:
-    print("\n✅ Model already performing excellently (>95% accuracy)!")
+    print("\n Model already performing excellently (>95% accuracy)!")
     print("   Skipping fine-tuning, proceeding to TFLite conversion...")
 else:
-    print(f"\n🎯 Fine-tuning for {EPOCHS_FINETUNE} epochs...")
+    print(f"\n Fine-tuning for {EPOCHS_FINETUNE} epochs...")
     
     # Unfreeze and compile
     for layer in model.layers:
@@ -95,10 +95,10 @@ with open(TFLITE_PATH, 'wb') as f:
     f.write(tflite_model)
 
 size_mb = len(tflite_model) / (1024 * 1024)
-print(f"✅ TFLite model saved: {TFLITE_PATH}")
+print(f" TFLite model saved: {TFLITE_PATH}")
 print(f"   - Size: {size_mb:.2f} MB")
 
-print("\n✅ Training complete!")
+print("\n Training complete!")
 print(f"   - Model: {MODEL_PATH}")
 print(f"   - TFLite: {TFLITE_PATH}")
-print("\n📝 Next: Integrate into Flutter app and test!")
+print("\n Next: Integrate into Flutter app and test!")

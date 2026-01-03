@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import '../models/receipt_model.dart';
 import '../services/supabase_service.dart';
 import '../services/storage_service.dart';
+// import '../services/certificate_service.dart'; // TEMPORARILY DISABLED
+// import '../services/blockchain_service.dart'; // TEMPORARILY DISABLED
 import '../../core/errors/exceptions.dart';
 
 /// Repository for managing receipt state
 class ReceiptRepository with ChangeNotifier {
   final SupabaseService _supabaseService;
   final StorageService _storageService;
+  // final CertificateService _certificateService = CertificateService(); // TEMPORARILY DISABLED
+  // final BlockchainService _blockchainService = BlockchainService(); // TEMPORARILY DISABLED
 
   ReceiptRepository(this._supabaseService, this._storageService);
 
@@ -136,6 +140,10 @@ class ReceiptRepository with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
 
+      // 🔗 Blockchain Certification (TEMPORARILY DISABLED)
+      // TODO: Complete wallet integration before enabling
+      // _certifyReceiptInBackground(createdReceipt);
+
       return createdReceipt;
     } on AppException catch (e) {
       _error = e.message;
@@ -247,4 +255,90 @@ class ReceiptRepository with ChangeNotifier {
   Future<void> refresh() async {
     await loadReceipts();
   }
+
+  // ============================================================================
+  // BLOCKCHAIN CERTIFICATION (TEMPORARILY DISABLED FOR DEMO)
+  // ============================================================================
+  // Uncomment when wallet integration is complete.
+  //
+  // /// Certify receipt on blockchain (background process)
+  // /// 
+  // /// This runs asynchronously without blocking the UI.
+  // /// Status updates are saved to Supabase as certification progresses.
+  // Future<void> _certifyReceiptInBackground(Receipt receipt) async {
+  //   try {
+  //     debugPrint('🔗 [Blockchain] Starting certification for receipt ${receipt.id}');
+  //     
+  //     // 1. Generate SHA-256 hash of receipt data
+  //     final hash = _certificateService.generateReceiptHash({
+  //       'id': receipt.id,
+  //       'merchant': receipt.merchant,
+  //       'amount': receipt.amount.toString(),
+  //       'date': receipt.date.toIso8601String(),
+  //       'category': receipt.category,
+  //       'ocr_text': receipt.ocrText ?? '',
+  //     });
+  //     
+  //     debugPrint('🔗 [Blockchain] Generated hash: $hash');
+  //     
+  //     // 2. Update receipt with hash and pending status
+  //     await _supabaseService.updateReceiptBlockchainFields(
+  //       receiptId: receipt.id,
+  //       certificateHash: hash,
+  //       certificationStatus: 'pending',
+  //     );
+  //     
+  //     debugPrint('🔗 [Blockchain] Hash saved to database');
+  //     
+  //     // 3. Initialize blockchain service
+  //     await _blockchainService.initialize();
+  //     
+  //     // 4. Submit certificate to Sepolia blockchain
+  //     debugPrint('🔗 [Blockchain] Submitting to Sepolia testnet...');
+  //     final txHash = await _blockchainService.certifyReceipt(hash);
+  //     
+  //     debugPrint('🔗 [Blockchain] Transaction submitted: $txHash');
+  //     
+  //     // 5. Update with transaction hash
+  //     await _supabaseService.updateReceiptBlockchainFields(
+  //       receiptId: receipt.id,
+  //       blockchainTxHash: txHash,
+  //       certificationStatus: 'submitted',
+  //     );
+  //     
+  //     // 6. Wait for blockchain confirmation (2 blocks)
+  //     debugPrint('🔗 [Blockchain] Waiting for confirmation...');
+  //     await _blockchainService.waitForConfirmation(txHash, confirmations: 2);
+  //     
+  //     // 7. Get transaction receipt for block number
+  //     final txReceipt = await _blockchainService.getTransactionReceipt(txHash);
+  //     
+  //     // 8. Mark as confirmed
+  //     await _supabaseService.updateReceiptBlockchainFields(
+  //       receiptId: receipt.id,
+  //       certificationStatus: 'confirmed',
+  //       certifiedAt: DateTime.now(),
+  //       blockNumber: txReceipt?.blockNumber.toInt(),
+  //     );
+  //     
+  //     debugPrint('✅ [Blockchain] Receipt certified successfully!');
+  //     debugPrint('   Transaction: https://sepolia.etherscan.io/tx/$txHash');
+  //     
+  //     // Refresh receipts to show updated status
+  //     await refresh();
+  //     
+  //   } catch (e) {
+  //     debugPrint('❌ [Blockchain] Certification failed: $e');
+  //     
+  //     // Mark as failed in database
+  //     try {
+  //       await _supabaseService.updateReceiptBlockchainFields(
+  //         receiptId: receipt.id,
+  //         certificationStatus: 'failed',
+  //       );
+  //     } catch (updateError) {
+  //       debugPrint('❌ [Blockchain] Failed to update status: $updateError');
+  //     }
+  //   }
+  // }
 }
